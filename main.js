@@ -85,17 +85,17 @@ let addUsers = (avatar, avatarBig, lastName, firstName, userName, birthday, phon
                              </ul></div>
                              <div><img src=${avatarBig} alt=${firstName + ' ' + lastName}></div></div></td>`;
   userList.appendChild(userDetails);
-  
+
   if(i % 2 == 0) {
-    user.style.backgroundColor = "#C0C0C0";
-    userDetails.style.backgroundColor = "#C0C0C0";
-  } 
+    user.style.backgroundColor = "#DCDCDC";
+    userDetails.style.backgroundColor = "#DCDCDC";
+  }
 }
-  
+
 
 let showDetails = (user) => {
-  if(document.querySelector('.dropdown-tr') != null) { 
-    document.querySelector('.dropdown-tr').previousSibling.lastChild.innerText = "+";  
+  if(document.querySelector('.dropdown-tr') != null) {
+    document.querySelector('.dropdown-tr').previousSibling.lastChild.innerText = "+";
     document.querySelector('.dropdown-tr').className = "hidden";
   } else {
     user.previousSibling.lastChild.innerText = "-";
@@ -106,25 +106,3 @@ let showDetails = (user) => {
 /*
 if(document.querySelector('.dropdown-tr').previousSibling.lastChild.textContent == '-') document.querySelector('.dropdown-tr').previousSibling.lastChild.innerText = "+";
 */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
