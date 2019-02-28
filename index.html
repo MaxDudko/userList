@@ -7,11 +7,18 @@
   </head>
   <body>
     <div class="header">
-      <h1>User List</h1>
+      <h1>[User List]</h1>
       <form class="" action="index.html" method="post">
-        <button type="button">Show Chart</button>
-        <input type="search" placeholder="Search User">
+        <button type="button" id="chart">Show Chart</button>
+        <input type="search" id="search" placeholder="Search User">
       </form>
+    </div>
+    <div class="popup-container hidden" id="popupChart">
+      <div class="popup-content">
+        <a href="#" id="popupExit">[x]</a>
+        <h3>Gender users</h3>
+        <canvas id="genderUsers" width="600" height="300"></canvas>
+      </div>
     </div>
     <div class="user-list">
       <table id="userList">
