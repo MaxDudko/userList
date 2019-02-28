@@ -39,7 +39,7 @@ let getUser = () => {
     lastName = data.results[i].name.last.split(/\s+/).map(word => word[0].toUpperCase() + word.substring(1)).join(' ');
     firstName = data.results[i].name.first.split(/\s+/).map(word => word[0].toUpperCase() + word.substring(1)).join(' ');
     userName = data.results[i].login.username;
-    birthday = data.results[i].dob.date;
+    birthday = data.results[i].dob.date.slice(0, 10).split('-').reverse().join('/');
     phone = data.results[i].phone;
     cell = data.results[i].cell;
     email = data.results[i].email
@@ -47,7 +47,7 @@ let getUser = () => {
     city = data.results[i].location.city;
     address = data.results[i].location.street;
     zipCode = data.results[i].location.postcode;
-    registered = data.results[i].registered.date;
+    registered = data.results[i].registered.date.slice(0, 10).split('-').reverse().join('/');
     addUsers(avatar, avatarBig, lastName, firstName, userName, birthday, phone, cell, email, location, city, address, zipCode, registered, i);
   }
 }
@@ -62,64 +62,128 @@ let addUsers = (avatar, avatarBig, lastName, firstName, userName, birthday, phon
                     <td>${userName}</td>
                     <td>${phone}</td>
                     <td>${location}</td>
-                    <td onClick = "showDetails(this.parentNode.nextSibling)">+</td>`;
+                    <td><a className = "" href="#" onClick = "showDetails(this.parentNode.parentNode.nextSibling)">+</a></td>`;
   userList.appendChild(user);
   let userDetails = document.createElement('tr');
   userDetails.className = "hidden";
   userDetails.innerHTML = `<td colSpan="7">
                              <div><div><ul>
-                               <li><h2>${firstName}</h2></li>
-                               <li><b>Username: </b><i>${userName}</i></li>
-                               <li><b>Registered: </b><i>${registered}</i></li>
-                               <li><b>Email: </b><i>${email}</i></li>
+                               <h2>${firstName}</h2>
+                               <li><b>Username: </b><span>${userName}</span></li>
+                               <li><b>Registered: </b><span>${registered}</span></li>
+                               <li><b>Email: </b><span>${email}</span></li>
                              </ul></div>
                              <div><ul>
-                               <li><b>Address: </b><i>${address}</i></li>
-                               <li><b>City: </b><i>${city}</i></li>
-                               <li><b>Zip Code: </b><i>${zipCode}</i></li>
+                               <li><b>Address: </b><span>${address}</span></li>
+                               <li><b>City: </b><span>${city}</span></li>
+                               <li><b>Zip Code: </b><span>${zipCode}</span></li>
                              </ul></div>
                              <div><ul>
-                               <li><b>Birthday: </b><i>${birthday}</i></li>
-                               <li><b>Phone: </b><i>${phone}</i></li>
-                               <li><b>Cell: </b><i>${cell}</i></li>
+                               <li><b>Birthday: </b><span>${birthday}</span></li>
+                               <li><b>Phone: </b><span>${phone}</span></li>
+                               <li><b>Cell: </b><span>${cell}</span></li>
                              </ul></div>
                              <div><img src=${avatarBig} alt=${firstName + ' ' + lastName}></div></div></td>`;
   userList.appendChild(userDetails);
-  
+
   if(i % 2 == 0) {
-    user.style.backgroundColor = "#C0C0C0";
-    userDetails.style.backgroundColor = "#C0C0C0";
-  } 
+    user.style.backgroundColor = "#A9A9A9";
+    userDetails.style.backgroundColor = "#A9A9A9";
+  }
 }
-  
+
 
 let showDetails = (user) => {
-  if(document.querySelector('.dropdown-tr') != null) { 
-    document.querySelector('.dropdown-tr').previousSibling.lastChild.innerText = "+";  
+  if(document.querySelector('.dropdown-tr') != null) {
+    document.querySelector('.dropdown-tr').previousSibling.lastChild.lastChild.innerText = "+";
     document.querySelector('.dropdown-tr').className = "hidden";
   } else {
-    user.previousSibling.lastChild.innerText = "-";
+    user.previousSibling.lastChild.lastChild.innerText = "-";
     user.className = "dropdown-tr";
   }
 }
 
+let showChart = () => {
+
+  let getValue = (name) => {
+    let counter = 0;
+    for (let i = 0; i < data.results.length; i++) {
+      if(data.results[i].gender == name) counter++;
+    }
+    return counter;
+  }
+  
+  let results = [
+                 {name: 'male', color: 'blue', value: getValue('male')},
+                 {name: 'female', color: 'pink', value: getValue('female')}
+               ];
+  
+  let total = (() => {
+    let total = 0;
+    for(i in results) {
+      total += results[i].value;
+    }
+    return total;
+  })();
+  
+  let cx = document.querySelector('#genderUsers').getContext('2d');
+  cx.font = '15px Georgia';
+  
+  let currentAngle = -0.5 * Math.PI;
+  let centerX = 300;
+  let centerY = 150;
+
+  results.forEach((result) => {
+  let sliceAngle = (result.value / total) * 2 * Math.PI;
+  let middleAngle = currentAngle + 0.5 * sliceAngle;
+  
+  cx.beginPath();
+  cx.arc(centerX, centerY, 100, currentAngle, currentAngle + sliceAngle);
+  currentAngle += sliceAngle;
+  cx.lineTo(centerX, centerY);
+  cx.fillStyle = result.color;
+  cx.fill();
+  
+  if (middleAngle < - 0.5 * Math.PI || middleAngle > 0.5 * Math.PI) {
+    cx.textAlign = 'right';
+  } else {
+    cx.textAlign = 'left';
+  }
+  cx.textBaseline = 'middle';
+  cx.fillText(`${result.name} ${total / 100 * result.value}%`, Math.cos(middleAngle) * 120 + centerX, Math.sin(middleAngle) * 120 + centerY);
+});
+}
+
+document.querySelector('#chart').addEventListener('click', () => {
+  document.querySelector('#popupChart').className = "popup-container";
+  showChart();
+});
+document.querySelector('#popupExit').addEventListener('click', () => {
+  document.querySelector('#popupChart').className += " hidden";
+});
+
+
+
+
+
+
+
 /*
-if(document.querySelector('.dropdown-tr').previousSibling.lastChild.textContent == '-') document.querySelector('.dropdown-tr').previousSibling.lastChild.innerText = "+";
+let searchUser = (name) => {
+  let userList = document.querySelector('#userList');
+  let users = userList.querySelectorAll('tr:nth-child(even)');
+  
+  for(let i = 0; i < users.length; i++) {
+    let firstName = users[i].querySelector('td:nth-child(3)').textContent;
+    let lastName = users[i].querySelector('td:nth-child(2)').textContent;
+    if(name.toLowerCase() == firstName.toLowerCase() || name.toLowerCase() == lastName.toLowerCase()) {
+      //users[i].focus();
+    }
+  }
+}
+
+document.querySelector('#search').addEventListener('keyup', () => searchUser(this.value));
 */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
