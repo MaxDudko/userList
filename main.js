@@ -56,7 +56,7 @@ let addUsers = (avatar, avatarBig, lastName, firstName, userName, birthday, phon
   let userList = document.querySelector('#userList');
   let user = document.createElement('tr');
   user.className = "user-tr";
-  user.innerHTML = `<td><img src=${avatar} alt=${firstName + ' ' + lastName}></td>
+  user.innerHTML = `<td><img src = ${avatar} alt = ${firstName + ' ' + lastName}></td>
                     <td>${lastName}</td>
                     <td>${firstName}</td>
                     <td>${userName}</td>
@@ -94,14 +94,28 @@ let addUsers = (avatar, avatarBig, lastName, firstName, userName, birthday, phon
 
 
 let showDetails = (user) => {
-  if(document.querySelector('.dropdown-tr') != null) {
+  if(document.querySelector('.dropdown-tr') != null && user.previousSibling.lastChild.lastChild.textContent != '-') {
     document.querySelector('.dropdown-tr').previousSibling.lastChild.lastChild.innerText = "+";
     document.querySelector('.dropdown-tr').className = "hidden";
-  } else {
     user.previousSibling.lastChild.lastChild.innerText = "-";
     user.className = "dropdown-tr";
+    } else if(user.previousSibling.lastChild.lastChild.textContent == '-') {
+      user.previousSibling.lastChild.lastChild.innerText = "+";
+      user.className = "hidden";
+    } else {
+      user.previousSibling.lastChild.lastChild.innerText = "-";
+      user.className = "dropdown-tr";
   }
 }
+
+/*let trs = document.querySelectorAll('.user-tr');
+let tds;
+for(let i = 0; i < trs.length; i++) {
+  tds = trs[i].querySelectorAll('td');
+  for(let j = 0; j < tds.length; j++) {
+    tds[j].addEventListener('click', () => showDetails(this.parentNode.nextSibling));
+  }
+}*/
 
 let showChart = () => {
 
@@ -162,28 +176,28 @@ document.querySelector('#popupExit').addEventListener('click', () => {
   document.querySelector('#popupChart').className += " hidden";
 });
 
+let searchUser = () => {
+    let name = document.getElementById('search');
+    let userList = document.getElementById('userList');
+    let regPhrase = new RegExp(name.value, 'i');
+    let flag = false;
+    for (let i = 1; i < userList.rows.length; i++) {
+        flag = false;
+        for (let j = userList.rows[i].cells.length - 1; j >= 0; j--) {
+            flag = regPhrase.test(userList.rows[i].cells[j].innerHTML);
+            if (flag) break;
+        }
+        if (flag) {
+            userList.rows[i].style.display = "";
+        } else {
+            userList.rows[i].style.display = "none";
+        }
 
-
-
-
-
-
-/*
-let searchUser = (name) => {
-  let userList = document.querySelector('#userList');
-  let users = userList.querySelectorAll('tr:nth-child(even)');
-  
-  for(let i = 0; i < users.length; i++) {
-    let firstName = users[i].querySelector('td:nth-child(3)').textContent;
-    let lastName = users[i].querySelector('td:nth-child(2)').textContent;
-    if(name.toLowerCase() == firstName.toLowerCase() || name.toLowerCase() == lastName.toLowerCase()) {
-      //users[i].focus();
     }
-  }
 }
 
-document.querySelector('#search').addEventListener('keyup', () => searchUser(this.value));
-*/
+document.querySelector('#search').addEventListener('keyup', () => searchUser());
+
 
 
 
