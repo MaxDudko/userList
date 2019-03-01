@@ -1,11 +1,26 @@
 let data;
-let ajax = new XMLHttpRequest();
-ajax.open('GET', 'https://randomuser.me/api/?results=100', true);
-ajax.send();
-ajax.onload = () => {
-  data = JSON.parse(ajax.responseText);
-  document.getElementById('preloader').remove();
-  getUser(data);
+window.onload = () => {
+  //let data;
+  let ajax = new XMLHttpRequest();
+  ajax.open('GET', 'https://randomuser.me/api/?results=100', true);
+  ajax.send();
+  
+  ajax.onload = () => {
+    data = JSON.parse(ajax.responseText);
+    document.getElementById('preloader').remove();
+    getUser(data);
+  
+    document.querySelector('#chart').addEventListener('click', () => {
+      document.querySelector('#popupChart').className = "popup-container";
+      showChart(data);
+    });
+  
+    document.querySelector('#popupExit').addEventListener('click', () => {
+      document.querySelector('#popupChart').className += " hidden";
+    });
+  
+    document.querySelector('#search').addEventListener('keyup', () => searchUser());
+  }
 }
 
 let getUser = (data) => {
@@ -85,7 +100,7 @@ let showDetails = (user) => {
   }
 }
 
-let showChart = () => {
+let showChart = (data) => {
 
   let getValue = (name) => {
     let counter = 0;
@@ -116,53 +131,42 @@ let showChart = () => {
   let centerY = 150;
 
   results.forEach((result) => {
-  let sliceAngle = (result.value / total) * 2 * Math.PI;
-  let middleAngle = currentAngle + 0.5 * sliceAngle;
+    let sliceAngle = (result.value / total) * 2 * Math.PI;
+    let middleAngle = currentAngle + 0.5 * sliceAngle;
   
-  cx.beginPath();
-  cx.arc(centerX, centerY, 100, currentAngle, currentAngle + sliceAngle);
-  currentAngle += sliceAngle;
-  cx.lineTo(centerX, centerY);
-  cx.fillStyle = result.color;
-  cx.fill();
+    cx.beginPath();
+    cx.arc(centerX, centerY, 100, currentAngle, currentAngle + sliceAngle);
+    currentAngle += sliceAngle;
+    cx.lineTo(centerX, centerY);
+    cx.fillStyle = result.color;
+    cx.fill();
   
-  if (middleAngle < - 0.5 * Math.PI || middleAngle > 0.5 * Math.PI) {
-    cx.textAlign = 'right';
-  } else {
-    cx.textAlign = 'left';
-  }
-  cx.textBaseline = 'middle';
-  cx.fillText(`${result.name} ${total / 100 * result.value}%`, Math.cos(middleAngle) * 120 + centerX, Math.sin(middleAngle) * 120 + centerY);
-});
+    if (middleAngle < - 0.5 * Math.PI || middleAngle > 0.5 * Math.PI) {
+      cx.textAlign = 'right';
+    } else {
+      cx.textAlign = 'left';
+    }
+    cx.textBaseline = 'middle';
+    cx.fillText(`${result.name} ${total / 100 * result.value}%`, Math.cos(middleAngle) * 120 + centerX, Math.sin(middleAngle) * 120 + centerY);
+  });
 }
-
-document.querySelector('#chart').addEventListener('click', () => {
-  document.querySelector('#popupChart').className = "popup-container";
-  showChart();
-});
-document.querySelector('#popupExit').addEventListener('click', () => {
-  document.querySelector('#popupChart').className += " hidden";
-});
 
 let searchUser = () => {
-    let name = document.getElementById('search');
-    let userList = document.getElementById('userList');
-    let regPhrase = new RegExp(name.value, 'i');
-    let flag = false;
-    for (let i = 1; i < userList.rows.length; i++) {
-        flag = false;
-        for (let j = userList.rows[i].cells.length - 1; j >= 0; j--) {
-            flag = regPhrase.test(userList.rows[i].cells[j].innerHTML);
-            if (flag) break;
-        }
-        if (flag) {
-            userList.rows[i].style.display = "";
-        } else {
-            userList.rows[i].style.display = "none";
-        }
-
+  let name = document.getElementById('search');
+  let userList = document.getElementById('userList');
+  let regPhrase = new RegExp(name.value, 'i');
+  let flag = false;
+  for (let i = 1; i < userList.rows.length; i++) {
+    flag = false;
+    for (let j = userList.rows[i].cells.length - 1; j >= 0; j--) {
+      if (j != 1 && j != 2) continue;
+      flag = regPhrase.test(userList.rows[i].cells[j].innerHTML);
+      if (flag) break;
     }
+    if (flag) {
+      userList.rows[i].style.display = "";
+    } else {
+      userList.rows[i].style.display = "none";
+    }
+  }
 }
-
-document.querySelector('#search').addEventListener('keyup', () => searchUser());
-
