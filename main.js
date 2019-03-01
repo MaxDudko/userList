@@ -1,37 +1,14 @@
 let data;
-//function getUser() {
-  let ajax = new XMLHttpRequest();
-  ajax.open('GET', 'https://randomuser.me/api/?results=100', true);
-  //ajax.responseType = 'json';
-  ajax.send();
-  ajax.onload = () => {
-    data = JSON.parse(ajax.responseText);
-    document.getElementById('preloader').remove();
-    getUser();
-  }
-  /*ajax.onreadystatechange = () => {
-    if (this.readyState != 4) return;
-    if (this.status != 200) {
-      alert( xhr.status + ': ' + xhr.statusText );
-    } else {
-      try {
-        data = JSON.parse(ajax.responseText);
-      } catch(e) {
-        alert( "ERROR: " + e.message );
-      }
-    }
-  }
-//}*/
-/*
-$.ajax({
-  url: 'https://randomuser.me/api/',
-  dataType: 'json',
-  success: (data) => {
-    console.log(data.results[0]);
-  }
-});*/
+let ajax = new XMLHttpRequest();
+ajax.open('GET', 'https://randomuser.me/api/?results=100', true);
+ajax.send();
+ajax.onload = () => {
+  data = JSON.parse(ajax.responseText);
+  document.getElementById('preloader').remove();
+  getUser(data);
+}
 
-let getUser = () => {
+let getUser = (data) => {
   let avatar, avatarBig, lastName, firstName, userName, birthday, phone, cell, email, location, city, address, zipCode, registered;
   for (let i = 0; i < data.results.length; i++) {
     avatar = data.results[i].picture.thumbnail;
@@ -107,15 +84,6 @@ let showDetails = (user) => {
       user.className = "dropdown-tr";
   }
 }
-
-/*let trs = document.querySelectorAll('.user-tr');
-let tds;
-for(let i = 0; i < trs.length; i++) {
-  tds = trs[i].querySelectorAll('td');
-  for(let j = 0; j < tds.length; j++) {
-    tds[j].addEventListener('click', () => showDetails(this.parentNode.nextSibling));
-  }
-}*/
 
 let showChart = () => {
 
@@ -197,12 +165,4 @@ let searchUser = () => {
 }
 
 document.querySelector('#search').addEventListener('keyup', () => searchUser());
-
-
-
-
-
-
-
-
 
