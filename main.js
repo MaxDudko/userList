@@ -1,6 +1,6 @@
-let data;
+//let data;
 window.onload = () => {
-  //let data;
+  let data;
   let ajax = new XMLHttpRequest();
   ajax.open('GET', 'https://randomuser.me/api/?results=100', true);
   ajax.send();
