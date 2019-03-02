@@ -21,7 +21,7 @@ window.onload = () => {
   
     document.querySelector('#search').addEventListener('keyup', () => searchUser());
   }
-
+}
 
   let getUser = (data) => {
     let avatar, avatarBig, lastName, firstName, userName, birthday, phone, cell, email, location, city, address, zipCode, registered;
@@ -170,4 +170,3 @@ window.onload = () => {
       }
     }
   }
-}
