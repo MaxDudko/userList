@@ -8,6 +8,7 @@
 <h4>Требования:</h4>
 1) User List / Список пользователей<br>
 • Отобразить User List c https://randomuser.me/ API который будет содержать:
+<br>
 <ul>
 <li>Avatar image / Изображение пользователя</li>
 <li>Last name / Фамилия</li>
